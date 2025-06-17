@@ -6,46 +6,91 @@
   <style>
     body {
       font-family: Arial, sans-serif;
-      background: #f0f0f0;
+      background: linear-gradient(to bottom, #ff9a9e, #fad0c4, #fbc2eb);
       margin: 0;
       padding: 0;
+      color: #333;
     }
     header {
-      background: #333;
+      background: linear-gradient(to right, #ff7e5f, #feb47b);
       color: #fff;
-      padding: 10px;
+      padding: 20px;
       text-align: center;
+      font-size: 1.8em;
+      font-weight: bold;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
     }
     .container {
       max-width: 800px;
-      margin: auto;
+      margin: 20px auto;
       padding: 20px;
       background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     }
     h2 {
-      border-bottom: 1px solid #ccc;
+      border-bottom: 2px solid #ff7e5f;
       padding-bottom: 5px;
+      color: #ff7e5f;
     }
     input, textarea, select, button {
-      margin: 5px 0;
-      padding: 5px;
+      margin: 10px 0;
+      padding: 10px;
       width: 100%;
       box-sizing: border-box;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 1em;
+    }
+    input:focus, textarea:focus, select:focus {
+      border-color: #ff7e5f;
+      outline: none;
+      box-shadow: 0 0 5px rgba(255, 126, 95, 0.5);
+    }
+    button {
+      background: #ff7e5f;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      font-size: 1em;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      transition: background 0.3s ease;
+    }
+    button:hover {
+      background: #e76e4b;
     }
     ul {
       list-style: none;
       padding: 0;
     }
     li {
-      background: #eee;
-      margin: 3px 0;
-      padding: 5px;
+      background: #f9f9f9;
+      margin: 5px 0;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
-    .completed {
+    li.completed {
       text-decoration: line-through;
       color: gray;
+      background: #e0e0e0;
+    }
+    #dailyTip {
+      font-style: italic;
+      color: #555;
+      margin-bottom: 20px;
+    }
+    .icon {
+      font-size: 1.2em;
     }
   </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
   <header>
@@ -67,7 +112,9 @@
         <option value="high">High</option>
       </select>
       <input type="text" id="taskCategory" placeholder="Category" />
-      <button onclick="addTask()">Add Task</button>
+      <button onclick="addTask()">
+        <i class="fas fa-plus icon"></i> Add Task
+      </button>
       <ul id="taskList"></ul>
     </div>
 
@@ -79,14 +126,18 @@
         <option value="income">Income</option>
         <option value="expense">Expense</option>
       </select>
-      <button onclick="addBudgetItem()">Add</button>
+      <button onclick="addBudgetItem()">
+        <i class="fas fa-wallet icon"></i> Add
+      </button>
       <ul id="budgetList"></ul>
     </div>
 
     <div id="notes">
       <h2>Notes</h2>
       <textarea id="noteContent" placeholder="Write your note..."></textarea>
-      <button onclick="addNote()">Add Note</button>
+      <button onclick="addNote()">
+        <i class="fas fa-sticky-note icon"></i> Add Note
+      </button>
       <ul id="noteList"></ul>
     </div>
   </div>
