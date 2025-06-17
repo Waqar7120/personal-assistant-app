@@ -3,252 +3,263 @@
 <head>
   <meta charset="UTF-8" />
   <title>Personal Assistant Web App</title>
-  <style>
+  <style id="theme-style">
     body {
-      font-family: Arial, sans-serif;
-      background: linear-gradient(to bottom, #ff9a9e, #fad0c4, #fbc2eb);
+      font-family: 'Segoe UI', Tahoma, sans-serif;
       margin: 0;
       padding: 0;
+      background: #f0f2f5;
       color: #333;
+      transition: background 0.4s ease, color 0.4s ease;
     }
     header {
-      background: linear-gradient(to right, #ff7e5f, #feb47b);
+      background: #4a90e2;
       color: #fff;
-      padding: 20px;
       text-align: center;
-      font-size: 1.8em;
-      font-weight: bold;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-    }
-    .container {
-      max-width: 800px;
-      margin: 20px auto;
       padding: 20px;
+      font-size: 24px;
+      position: relative;
+    }
+    main {
+      max-width: 1000px;
+      margin: 20px auto;
+      padding: 0 15px;
+    }
+    .section {
       background: #fff;
+      padding: 20px;
       border-radius: 10px;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      margin-bottom: 20px;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .section:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.1);
     }
     h2 {
-      border-bottom: 2px solid #ff7e5f;
-      padding-bottom: 5px;
-      color: #ff7e5f;
+      margin-top: 0;
+      color: #4a90e2;
     }
-    input, textarea, select, button {
-      margin: 10px 0;
-      padding: 10px;
+    input, textarea, select {
       width: 100%;
-      box-sizing: border-box;
+      padding: 10px;
+      margin: 6px 0;
       border: 1px solid #ccc;
-      border-radius: 5px;
-      font-size: 1em;
+      border-radius: 6px;
+      font-size: 14px;
+      transition: border 0.3s ease;
     }
     input:focus, textarea:focus, select:focus {
-      border-color: #ff7e5f;
-      outline: none;
-      box-shadow: 0 0 5px rgba(255, 126, 95, 0.5);
+      border: 1px solid #4a90e2;
     }
     button {
-      background: #ff7e5f;
+      background: #4a90e2;
       color: #fff;
+      padding: 8px 16px;
       border: none;
+      border-radius: 6px;
       cursor: pointer;
-      font-size: 1em;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 5px;
+      margin-top: 6px;
+      font-size: 14px;
       transition: background 0.3s ease;
     }
     button:hover {
-      background: #e76e4b;
+      background: #357abd;
     }
     ul {
-      list-style: none;
-      padding: 0;
+      list-style-type: none;
+      padding-left: 0;
     }
     li {
+      padding: 6px 0;
+      cursor: pointer;
+      transition: opacity 0.3s ease;
+    }
+    li:hover {
+      opacity: 0.7;
+    }
+    canvas {
+      width: 100%;
+      height: 150px;
+      display: block;
       background: #f9f9f9;
-      margin: 5px 0;
-      padding: 10px;
-      border: 1px solid #ddd;
-      border-radius: 5px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+      border-radius: 6px;
     }
-    li.completed {
-      text-decoration: line-through;
-      color: gray;
-      background: #e0e0e0;
+    #themeSelector {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      padding: 4px 8px;
     }
-    #dailyTip {
-      font-style: italic;
-      color: #555;
-      margin-bottom: 20px;
+    .loading {
+      display: inline-block;
+      font-size: 12px;
+      color: #888;
+      margin-left: 6px;
     }
-    .icon {
-      font-size: 1.2em;
+    [data-tooltip] {
+      position: relative;
+      cursor: help;
+    }
+    [data-tooltip]:hover::after {
+      content: attr(data-tooltip);
+      position: absolute;
+      bottom: 125%;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #333;
+      color: #fff;
+      padding: 4px 8px;
+      border-radius: 4px;
+      white-space: nowrap;
+      font-size: 12px;
+      opacity: 1;
+      transition: opacity 0.3s ease;
+      pointer-events: none;
     }
   </style>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
   <header>
-    <h1>Personal Assistant Web App</h1>
+    🌟 Personal Assistant Web App
+    <select id="themeSelector" onchange="changeTheme(this.value)" data-tooltip="Select a theme">
+      <option value="light">Light</option>
+      <option value="colorful">Colorful</option>
+      <option value="dark">Dark</option>
+    </select>
   </header>
-  <div class="container">
-    <div id="dashboard">
-      <h2>Dashboard</h2>
-      <p id="dailyTip"></p>
+  <main>
+    <div class="section">
+      <h2>📊 Dashboard</h2>
+      <p><strong>Upcoming Tasks:</strong> <span id="dashTasks"></span></p>
+      <p><strong>Budget Summary:</strong> <span id="dashBudget"></span></p>
+      <p><strong>Recent Notes:</strong> <span id="dashNotes"></span></p>
+      <p><strong>Daily Tip:</strong> <span id="dailyTip"></span></p>
     </div>
 
-    <div id="tasks">
-      <h2>Task Management</h2>
-      <input type="text" id="taskTitle" placeholder="Task Title" />
-      <input type="date" id="taskDueDate" />
-      <select id="taskPriority">
-        <option value="low">Low</option>
-        <option value="medium">Medium</option>
-        <option value="high">High</option>
+    <div class="section">
+      <h2>✅ Task Manager</h2>
+      <input id="taskName" placeholder="Task name" data-tooltip="Enter task title">
+      <input type="date" id="taskDue" data-tooltip="Pick a due date">
+      <select id="taskPriority" data-tooltip="Set task priority">
+        <option>Low</option><option>Medium</option><option>High</option>
       </select>
-      <input type="text" id="taskCategory" placeholder="Category" />
-      <button onclick="addTask()">
-        <i class="fas fa-plus icon"></i> Add Task
-      </button>
+      <input id="taskCategory" placeholder="Category" data-tooltip="e.g., Work, Personal">
+      <button onclick="withLoading(addTask)">Add Task</button><span id="taskLoading" class="loading"></span>
       <ul id="taskList"></ul>
+      <p id="taskStats"></p>
     </div>
 
-    <div id="budget">
-      <h2>Budget Tracker</h2>
-      <input type="text" id="budgetDesc" placeholder="Description" />
-      <input type="number" id="budgetAmount" placeholder="Amount" />
-      <select id="budgetType">
-        <option value="income">Income</option>
-        <option value="expense">Expense</option>
+    <div class="section">
+      <h2>💰 Budget Tracker</h2>
+      <input id="budgetDesc" placeholder="Description" data-tooltip="Income or expense description">
+      <input type="number" id="budgetAmt" placeholder="Amount" data-tooltip="Amount in €">
+      <select id="budgetCat" data-tooltip="Select a category">
+        <option>Income</option><option>Food</option><option>Transport</option><option>Other</option>
       </select>
-      <button onclick="addBudgetItem()">
-        <i class="fas fa-wallet icon"></i> Add
-      </button>
+      <button onclick="withLoading(addBudget)">Add Item</button><span id="budgetLoading" class="loading"></span>
       <ul id="budgetList"></ul>
+      <canvas id="budgetChart"></canvas>
     </div>
 
-    <div id="notes">
-      <h2>Notes</h2>
-      <textarea id="noteContent" placeholder="Write your note..."></textarea>
-      <button onclick="addNote()">
-        <i class="fas fa-sticky-note icon"></i> Add Note
-      </button>
+    <div class="section">
+      <h2>📝 Notes</h2>
+      <input id="noteTitle" placeholder="Title" data-tooltip="Note title">
+      <input id="noteTags" placeholder="Tags (comma separated)" data-tooltip="Add tags for organization">
+      <textarea id="noteBody" placeholder="Write your note..." data-tooltip="Type your note here"></textarea>
+      <button onclick="withLoading(addNote)">Add Note</button><span id="noteLoading" class="loading"></span>
+      <input id="noteSearch" placeholder="Search notes..." oninput="searchNotes()" data-tooltip="Search by title or content">
       <ul id="noteList"></ul>
     </div>
-  </div>
+  </main>
 
   <script>
-    // --- Daily Tip ---
-    const tips = [
-      "Stay organized!",
-      "Review your goals daily.",
-      "Take breaks to stay fresh.",
-      "Focus on one task at a time.",
-      "Keep track of your spending."
-    ];
-    document.getElementById("dailyTip").innerText = "Tip: " + tips[Math.floor(Math.random() * tips.length)];
+    // Helpers
+    const get = key => JSON.parse(localStorage.getItem(key) || '[]');
+    const set = (key, val) => localStorage.setItem(key, JSON.stringify(val));
 
-    // --- Tasks ---
-    let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+    function withLoading(fn) {
+      const loading = document.querySelector(`#${fn.name.replace('add','').toLowerCase()}Loading`);
+      loading.textContent = 'Loading...';
+      setTimeout(() => {
+        fn();
+        loading.textContent = '';
+      }, 300); // Simulate brief processing
+    }
 
-    function renderTasks() {
-      const list = document.getElementById("taskList");
-      list.innerHTML = "";
-      tasks.forEach((task, index) => {
-        const li = document.createElement("li");
-        li.innerText = `${task.title} (Due: ${task.dueDate}, Priority: ${task.priority})`;
-        if (task.completed) li.classList.add("completed");
-        li.onclick = () => toggleComplete(index);
-        list.appendChild(li);
-      });
+    function applyTheme(theme) {
+      const style = document.getElementById('theme-style');
+      if (theme === 'dark') {
+        style.innerHTML = `body { background:#121212;color:#eee;transition:background .4s,color .4s }header{background:#1f1f1f;color:#0f0}.section{background:#1e1e1e;color:#eee}input,textarea,select{background:#333;color:#eee;border:1px solid #555}button{background:#0f0;color:#000}button:hover{background:#0c0}canvas{background:#333}#themeSelector{background:#333;color:#eee}`;
+      } else if (theme === 'colorful') {
+        style.innerHTML = `body {background:linear-gradient(to right,#fbc2eb,#a6c1ee);color:#333;transition:background .4s,color .4s}header{background:#ff6f61;color:#fff}.section{background:#fff;color:#333}input,textarea,select{background:#fff;color:#333;border:1px solid #ccc}button{background:#4a90e2;color:#fff}button:hover{background:#357abd}canvas{background:#f9f9f9}#themeSelector{background:#fff;color:#333}`;
+      } else {
+        style.innerHTML = `body {background:#f0f2f5;color:#333;transition:background .4s,color .4s}header{background:#4a90e2;color:#fff}.section{background:#fff;color:#333}input,textarea,select{background:#fff;color:#333;border:1px solid #ccc}button{background:#4a90e2;color:#fff}button:hover{background:#357abd}canvas{background:#f9f9f9}#themeSelector{background:#fff;color:#333}`;
+      }
+      localStorage.setItem('theme', theme);
+    }
+    function changeTheme(val) { applyTheme(val); }
+    function loadTheme() {
+      const t = localStorage.getItem('theme') || 'light';
+      document.getElementById('themeSelector').value = t;
+      applyTheme(t);
+    }
+
+    function updateDashboard() {
+      const tasks = get('tasks').filter(t => !t.done);
+      document.getElementById('dashTasks').textContent = tasks.length;
+      const budget = get('budget');
+      const total = budget.reduce((s, b) => s + parseFloat(b.amount), 0);
+      document.getElementById('dashBudget').textContent = `€${total.toFixed(2)}`;
+      const notes = get('notes');
+      document.getElementById('dashNotes').textContent = notes.slice(-1)[0]?.title || 'None';
+      const tips = ["Review tasks daily!","Stick to your budget!","Write down ideas!","Prioritize urgent tasks!"];
+      document.getElementById('dailyTip').textContent = tips[Math.floor(Math.random()*tips.length)];
     }
 
     function addTask() {
-      const title = document.getElementById("taskTitle").value;
-      const dueDate = document.getElementById("taskDueDate").value;
-      const priority = document.getElementById("taskPriority").value;
-      const category = document.getElementById("taskCategory").value;
-      if (!title || !dueDate) {
-        alert("Please fill in task title and due date");
-        return;
-      }
-      tasks.push({ title, dueDate, priority, category, completed: false });
-      localStorage.setItem("tasks", JSON.stringify(tasks));
-      renderTasks();
-      document.getElementById("taskTitle").value = "";
-      document.getElementById("taskDueDate").value = "";
-      document.getElementById("taskCategory").value = "";
+      const n = document.getElementById('taskName').value, d = document.getElementById('taskDue').value, p = document.getElementById('taskPriority').value, c = document.getElementById('taskCategory').value;
+      if(n){const t=get('tasks');t.push({name:n,due:d,priority:p,category:c,done:false});set('tasks',t);renderTasks();updateDashboard();}
+    }
+    function renderTasks() {
+      const t = get('tasks'), l = document.getElementById('taskList'); l.innerHTML = ''; let d=0;
+      t.forEach((v,i)=>{const li=document.createElement('li'); li.textContent=`${v.name} (${v.priority}, due ${v.due}) [${v.category}]`; li.style.textDecoration=v.done?'line-through':''; li.onclick=()=>{v.done=!v.done;set('tasks',t);renderTasks();updateDashboard();}; if(v.done)d++; l.appendChild(li);});
+      document.getElementById('taskStats').textContent = `Completed: ${d}/${t.length}`;
     }
 
-    function toggleComplete(index) {
-      tasks[index].completed = !tasks[index].completed;
-      localStorage.setItem("tasks", JSON.stringify(tasks));
-      renderTasks();
+    function addBudget() {
+      const desc=document.getElementById('budgetDesc').value, amt=parseFloat(document.getElementById('budgetAmt').value), cat=document.getElementById('budgetCat').value;
+      if(desc&&amt){const b=get('budget');b.push({desc,amount:amt,cat});set('budget',b);renderBudget();updateDashboard();}
     }
-
-    renderTasks();
-
-    // --- Budget ---
-    let budget = JSON.parse(localStorage.getItem("budget")) || [];
-
     function renderBudget() {
-      const list = document.getElementById("budgetList");
-      list.innerHTML = "";
-      budget.forEach(item => {
-        const li = document.createElement("li");
-        li.innerText = `${item.type.toUpperCase()}: ${item.desc} - $${item.amount}`;
-        list.appendChild(li);
-      });
+      const b=get('budget'), l=document.getElementById('budgetList');l.innerHTML='';b.forEach((v,i)=>{const li=document.createElement('li');li.textContent=`${v.desc}: €${v.amount} [${v.cat}]`;li.onclick=()=>{if(confirm('Delete item?')){b.splice(i,1);set('budget',b);renderBudget();updateDashboard();}};l.appendChild(li);});drawBudgetChart(b);
     }
-
-    function addBudgetItem() {
-      const desc = document.getElementById("budgetDesc").value;
-      const amount = parseFloat(document.getElementById("budgetAmount").value);
-      const type = document.getElementById("budgetType").value;
-      if (!desc || isNaN(amount)) {
-        alert("Please fill in description and valid amount");
-        return;
-      }
-      budget.push({ desc, amount, type });
-      localStorage.setItem("budget", JSON.stringify(budget));
-      renderBudget();
-      document.getElementById("budgetDesc").value = "";
-      document.getElementById("budgetAmount").value = "";
-    }
-
-    renderBudget();
-
-    // --- Notes ---
-    let notes = JSON.parse(localStorage.getItem("notes")) || [];
-
-    function renderNotes() {
-      const list = document.getElementById("noteList");
-      list.innerHTML = "";
-      notes.forEach(note => {
-        const li = document.createElement("li");
-        li.innerText = note.content;
-        list.appendChild(li);
-      });
+    function drawBudgetChart(b) {
+      const ctx=document.getElementById('budgetChart').getContext('2d');ctx.clearRect(0,0,400,150);let x=10;
+      b.slice(-10).forEach(v=>{const h=Math.min(100,Math.abs(v.amount));ctx.fillStyle=v.amount>=0?'#4caf50':'#e74c3c';ctx.fillRect(x,150-h,20,h);x+=30;});
     }
 
     function addNote() {
-      const content = document.getElementById("noteContent").value;
-      if (!content) {
-        alert("Please write something in your note");
-        return;
-      }
-      notes.push({ content });
-      localStorage.setItem("notes", JSON.stringify(notes));
-      renderNotes();
-      document.getElementById("noteContent").value = "";
+      const t=document.getElementById('noteTitle').value, tags=document.getElementById('noteTags').value.split(',').map(e=>e.trim()), b=document.getElementById('noteBody').value;
+      if(t&&b){const n=get('notes');n.push({title:t,tags,body:b});set('notes',n);renderNotes();updateDashboard();}
+    }
+    function renderNotes() {
+      const n=get('notes'), l=document.getElementById('noteList');l.innerHTML='';n.forEach(v=>{const li=document.createElement('li');li.innerHTML=`<strong>${v.title}</strong> [${v.tags.join(', ')}]`;l.appendChild(li);});
+    }
+    function searchNotes() {
+      const q=document.getElementById('noteSearch').value.toLowerCase(), n=get('notes').filter(v=>v.title.toLowerCase().includes(q)||v.body.toLowerCase().includes(q)), l=document.getElementById('noteList');l.innerHTML='';n.forEach(v=>{const li=document.createElement('li');li.innerHTML=`<strong>${v.title}</strong> [${v.tags.join(', ')}]`;l.appendChild(li);});
     }
 
-    renderNotes();
+    loadTheme(); renderTasks(); renderBudget(); renderNotes(); updateDashboard();
   </script>
 </body>
 </html>
+
+
+
+
+
+
+
+
