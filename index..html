@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Personal Assistant Web App</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0f0f0;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background: #333;
+      color: #fff;
+      padding: 10px;
+      text-align: center;
+    }
+    .container {
+      max-width: 800px;
+      margin: auto;
+      padding: 20px;
+      background: #fff;
+    }
+    h2 {
+      border-bottom: 1px solid #ccc;
+      padding-bottom: 5px;
+    }
+    input, textarea, select, button {
+      margin: 5px 0;
+      padding: 5px;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+    li {
+      background: #eee;
+      margin: 3px 0;
+      padding: 5px;
+    }
+    .completed {
+      text-decoration: line-through;
+      color: gray;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Personal Assistant Web App</h1>
+  </header>
+  <div class="container">
+    <div id="dashboard">
+      <h2>Dashboard</h2>
+      <p id="dailyTip"></p>
+    </div>
+
+    <div id="tasks">
+      <h2>Task Management</h2>
+      <input type="text" id="taskTitle" placeholder="Task Title" />
+      <input type="date" id="taskDueDate" />
+      <select id="taskPriority">
+        <option value="low">Low</option>
+        <option value="medium">Medium</option>
+        <option value="high">High</option>
+      </select>
+      <input type="text" id="taskCategory" placeholder="Category" />
+      <button onclick="addTask()">Add Task</button>
+      <ul id="taskList"></ul>
+    </div>
+
+    <div id="budget">
+      <h2>Budget Tracker</h2>
+      <input type="text" id="budgetDesc" placeholder="Description" />
+      <input type="number" id="budgetAmount" placeholder="Amount" />
+      <select id="budgetType">
+        <option value="income">Income</option>
+        <option value="expense">Expense</option>
+      </select>
+      <button onclick="addBudgetItem()">Add</button>
+      <ul id="budgetList"></ul>
+    </div>
+
+    <div id="notes">
+      <h2>Notes</h2>
+      <textarea id="noteContent" placeholder="Write your note..."></textarea>
+      <button onclick="addNote()">Add Note</button>
+      <ul id="noteList"></ul>
+    </div>
+  </div>
+
+  <script>
+    // --- Daily Tip ---
+    const tips = [
+      "Stay organized!",
+      "Review your goals daily.",
+      "Take breaks to stay fresh.",
+      "Focus on one task at a time.",
+      "Keep track of your spending."
+    ];
+    document.getElementById("dailyTip").innerText = "Tip: " + tips[Math.floor(Math.random() * tips.length)];
+
+    // --- Tasks ---
+    let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+
+    function renderTasks() {
+      const list = document.getElementById("taskList");
+      list.innerHTML = "";
+      tasks.forEach((task, index) => {
+        const li = document.createElement("li");
+        li.innerText = `${task.title} (Due: ${task.dueDate}, Priority: ${task.priority})`;
+        if (task.completed) li.classList.add("completed");
+        li.onclick = () => toggleComplete(index);
+        list.appendChild(li);
+      });
+    }
+
+    function addTask() {
+      const title = document.getElementById("taskTitle").value;
+      const dueDate = document.getElementById("taskDueDate").value;
+      const priority = document.getElementById("taskPriority").value;
+      const category = document.getElementById("taskCategory").value;
+      if (!title || !dueDate) {
+        alert("Please fill in task title and due date");
+        return;
+      }
+      tasks.push({ title, dueDate, priority, category, completed: false });
+      localStorage.setItem("tasks", JSON.stringify(tasks));
+      renderTasks();
+      document.getElementById("taskTitle").value = "";
+      document.getElementById("taskDueDate").value = "";
+      document.getElementById("taskCategory").value = "";
+    }
+
+    function toggleComplete(index) {
+      tasks[index].completed = !tasks[index].completed;
+      localStorage.setItem("tasks", JSON.stringify(tasks));
+      renderTasks();
+    }
+
+    renderTasks();
+
+    // --- Budget ---
+    let budget = JSON.parse(localStorage.getItem("budget")) || [];
+
+    function renderBudget() {
+      const list = document.getElementById("budgetList");
+      list.innerHTML = "";
+      budget.forEach(item => {
+        const li = document.createElement("li");
+        li.innerText = `${item.type.toUpperCase()}: ${item.desc} - $${item.amount}`;
+        list.appendChild(li);
+      });
+    }
+
+    function addBudgetItem() {
+      const desc = document.getElementById("budgetDesc").value;
+      const amount = parseFloat(document.getElementById("budgetAmount").value);
+      const type = document.getElementById("budgetType").value;
+      if (!desc || isNaN(amount)) {
+        alert("Please fill in description and valid amount");
+        return;
+      }
+      budget.push({ desc, amount, type });
+      localStorage.setItem("budget", JSON.stringify(budget));
+      renderBudget();
+      document.getElementById("budgetDesc").value = "";
+      document.getElementById("budgetAmount").value = "";
+    }
+
+    renderBudget();
+
+    // --- Notes ---
+    let notes = JSON.parse(localStorage.getItem("notes")) || [];
+
+    function renderNotes() {
+      const list = document.getElementById("noteList");
+      list.innerHTML = "";
+      notes.forEach(note => {
+        const li = document.createElement("li");
+        li.innerText = note.content;
+        list.appendChild(li);
+      });
+    }
+
+    function addNote() {
+      const content = document.getElementById("noteContent").value;
+      if (!content) {
+        alert("Please write something in your note");
+        return;
+      }
+      notes.push({ content });
+      localStorage.setItem("notes", JSON.stringify(notes));
+      renderNotes();
+      document.getElementById("noteContent").value = "";
+    }
+
+    renderNotes();
+  </script>
+</body>
+</html>
